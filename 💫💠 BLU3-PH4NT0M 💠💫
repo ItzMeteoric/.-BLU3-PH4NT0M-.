@@ -429,7 +429,7 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - FIXED LAYOUT, NO OVERLAP)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - SPEED DEMON PERMANENT FIX)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
@@ -493,30 +493,27 @@ gbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ===== SPEED DEMON (SCROLLABLE NUMBER ROW - NO OVERLAP) =====
-local speedActive = false
+-- ===== SPEED DEMON (PERMANENT - JUST PICK A NUMBER AND RUN) =====
 local currentSpeed = 16
-local speedConnection = nil
+local speedLoop = nil
 
-local function applySpeed()
+-- Force speed every single frame (game can't override)
+local function forceSpeed()
     local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
-    if h and speedActive then
-        h.WalkSpeed = currentSpeed
+    if h then
+        if h.WalkSpeed ~= currentSpeed then
+            h.WalkSpeed = currentSpeed
+        end
     end
 end
 
-local function startSpeedLoop()
-    if speedConnection then speedConnection:Disconnect() end
-    speedConnection = RS.Heartbeat:Connect(applySpeed)
+-- Start forcing speed constantly
+local function startForceSpeed()
+    if speedLoop then speedLoop:Disconnect() end
+    speedLoop = RS.RenderStepped:Connect(forceSpeed)
 end
 
-local function stopSpeedLoop()
-    if speedConnection then speedConnection:Disconnect() end
-    speedConnection = nil
-    local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
-    if h then h.WalkSpeed = 16 end
-end
-
+-- Set speed (called when you click a number)
 local function setSpeed(value)
     if value == "NORMAL" then
         currentSpeed = 16
@@ -524,42 +521,40 @@ local function setSpeed(value)
         currentSpeed = tonumber(value)
         if not currentSpeed then currentSpeed = 16 end
     end
-    applySpeed()
     
-    local n = Instance.new("TextLabel") n.Size=UDim2.new(0,150,0,25) n.Position=UDim2.new(0.5,-75,0.5,-40)
-    n.BackgroundColor3=Color3.fromRGB(0,150,100) n.BackgroundTransparency=0.3 n.Text="⚡ Speed: "..currentSpeed
-    n.TextColor3=Color3.fromRGB(255,255,255) n.TextSize=11 n.Font=Enum.Font.GothamBold n.Parent=MG
+    -- Apply immediately
+    local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
+    if h then
+        h.WalkSpeed = currentSpeed
+    end
+    
+    -- Show confirmation
+    local n = Instance.new("TextLabel") 
+    n.Size = UDim2.new(0,150,0,25) 
+    n.Position = UDim2.new(0.5,-75,0.5,-40)
+    n.BackgroundColor3 = Color3.fromRGB(0,150,100) 
+    n.BackgroundTransparency = 0.3 
+    n.Text = "⚡ Speed: "..currentSpeed
+    n.TextColor3 = Color3.fromRGB(255,255,255) 
+    n.TextSize = 11 
+    n.Font = Enum.Font.GothamBold 
+    n.Parent = MG
     Instance.new("UICorner", n).CornerRadius = UDim.new(0,8)
-    task.wait(1) n:Destroy()
+    task.wait(1) 
+    n:Destroy()
 end
 
--- Main Speed Button Frame (taller to fit controls)
-local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,120) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
+-- Start the force loop immediately
+startForceSpeed()
+
+-- Speed Demon UI
+local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,110) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
 Instance.new("UICorner", sf).CornerRadius = UDim.new(0,8)
 
--- Title
 local sl = Instance.new("TextLabel") sl.Size=UDim2.new(1,-90,0,22) sl.Position=UDim2.new(0,10,0,5) sl.BackgroundTransparency=1 sl.Text="⚡SPEED DEMON⚡" sl.TextColor3=Color3.fromRGB(100,180,255) sl.TextSize=12 sl.TextXAlignment=Enum.TextXAlignment.Left sl.Font=Enum.Font.GothamBold sl.Parent=sf
-local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Scroll numbers → | Custom speed below" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
+local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Click any number - speed changes immediately" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
 
--- ON/OFF Toggle Button (top right)
-local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,0,5) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="OFF" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
-Instance.new("UICorner", sbtn).CornerRadius = UDim.new(0,6)
-
-sbtn.MouseButton1Click:Connect(function()
-    speedActive = not speedActive
-    if speedActive then
-        sbtn.Text = "ON"
-        sbtn.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
-        startSpeedLoop()
-        applySpeed()
-    else
-        sbtn.Text = "OFF"
-        sbtn.BackgroundColor3 = Color3.fromRGB(0, 80, 160)
-        stopSpeedLoop()
-    end
-end)
-
--- Horizontal Scrolling Number Row
+-- Scrollable number row
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1, -10, 0, 40)
 scrollFrame.Position = UDim2.new(0, 5, 0, 50)
@@ -567,7 +562,7 @@ scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 30, 50)
 scrollFrame.BorderSizePixel = 0
 scrollFrame.ScrollBarThickness = 3
 scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(0, 150, 255)
-scrollFrame.CanvasSize = UDim2.new(0, 320, 0, 0) -- enough width for all buttons
+scrollFrame.CanvasSize = UDim2.new(0, 340, 0, 0)
 scrollFrame.Parent = sf
 Instance.new("UICorner", scrollFrame).CornerRadius = UDim.new(0, 6)
 
@@ -580,7 +575,7 @@ numbersLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 local numbers = {"10","20","30","40","50","60","70","80","90","100"}
 for _, v in ipairs(numbers) do
     local numBtn = Instance.new("TextButton")
-    numBtn.Size = UDim2.new(0, 40, 0, 32)
+    numBtn.Size = UDim2.new(0, 42, 0, 32)
     numBtn.BackgroundColor3 = Color3.fromRGB(35, 45, 70)
     numBtn.Text = v
     numBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -591,16 +586,10 @@ for _, v in ipairs(numbers) do
     
     numBtn.MouseButton1Click:Connect(function()
         setSpeed(v)
-        if not speedActive then
-            speedActive = true
-            sbtn.Text = "ON"
-            sbtn.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
-            startSpeedLoop()
-        end
     end)
 end
 
--- Custom Input Row
+-- Custom speed input
 local customFrame = Instance.new("Frame")
 customFrame.Size = UDim2.new(1, -10, 0, 32)
 customFrame.Position = UDim2.new(0, 5, 0, 95)
@@ -609,10 +598,10 @@ customFrame.Parent = sf
 Instance.new("UICorner", customFrame).CornerRadius = UDim.new(0, 6)
 
 local customBox = Instance.new("TextBox")
-customBox.Size = UDim2.new(0, 120, 1, -4)
+customBox.Size = UDim2.new(0, 130, 1, -4)
 customBox.Position = UDim2.new(0, 5, 0, 2)
 customBox.BackgroundColor3 = Color3.fromRGB(45, 55, 80)
-customBox.PlaceholderText = "CUSTOM SPEED (16-500)"
+customBox.PlaceholderText = "Custom (16-500)"
 customBox.Text = ""
 customBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 customBox.TextSize = 10
@@ -635,15 +624,9 @@ setBtn.MouseButton1Click:Connect(function()
     local input = tonumber(customBox.Text)
     if input and input >= 16 and input <= 500 then
         setSpeed(tostring(input))
-        if not speedActive then
-            speedActive = true
-            sbtn.Text = "ON"
-            sbtn.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
-            startSpeedLoop()
-        end
         customBox.Text = ""
     else
-        customBox.Text = "ERROR: 16-500"
+        customBox.Text = "16-500 ONLY"
         task.wait(1)
         customBox.Text = ""
     end
@@ -652,9 +635,7 @@ end)
 -- Keep speed on respawn
 PL.CharacterAdded:Connect(function()
     task.wait(0.5)
-    if speedActive then
-        applySpeed()
-    end
+    forceSpeed()
 end)
 
 -- Update canvas size
@@ -664,4 +645,4 @@ end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - ALL FEATURES READY! Scrollable number row - no overlap")
+print("✅ PART 4/4 - SPEED DEMON PERMANENTLY WORKS!")
