@@ -429,7 +429,7 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - ALL FEATURES WORKING)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - ALL FEATURES WITH VISIBLE POPUP)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
@@ -493,7 +493,7 @@ gbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ===== SPEED DEMON (WORKING POPUP) =====
+-- ===== SPEED DEMON (FULLY VISIBLE POPUP) =====
 local speedActive = false
 local currentSpeed = 16
 local speedConnection = nil
@@ -542,14 +542,13 @@ local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=U
 local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,1,-44) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="OFF" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
 Instance.new("UICorner", sbtn).CornerRadius = UDim.new(0,6)
 
--- POPUP FUNCTION
 local function showSpeedPopup()
     if speedPopup then speedPopup:Destroy() end
     
     speedPopup = Instance.new("Frame")
-    speedPopup.Size = UDim2.new(0, 340, 0, 200)
-    speedPopup.Position = UDim2.new(0.5, -170, 0.5, -100)
-    speedPopup.BackgroundColor3 = Color3.fromRGB(15, 20, 35)
+    speedPopup.Size = UDim2.new(0, 320, 0, 230)
+    speedPopup.Position = UDim2.new(0.5, -160, 0.5, -115)
+    speedPopup.BackgroundColor3 = Color3.fromRGB(20, 25, 45)
     speedPopup.BackgroundTransparency = 0
     speedPopup.BorderSizePixel = 0
     speedPopup.ZIndex = 20
@@ -560,18 +559,24 @@ local function showSpeedPopup()
     popupStroke.Color = Color3.fromRGB(0, 150, 255)
     popupStroke.Thickness = 2
     
-    -- Title
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
-    title.BackgroundColor3 = Color3.fromRGB(0, 80, 160)
-    title.Text = "⚡ SPEED DEMON ⚡"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.TextSize = 14
-    title.Font = Enum.Font.GothamBold
-    title.Parent = speedPopup
-    Instance.new("UICorner", title).CornerRadius = UDim.new(0, 12)
+    -- Title Bar
+    local titleBar = Instance.new("Frame")
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(0, 80, 160)
+    titleBar.Parent = speedPopup
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12)
     
-    -- Close button
+    local titleText = Instance.new("TextLabel")
+    titleText.Size = UDim2.new(1, -40, 1, 0)
+    titleText.Position = UDim2.new(0, 10, 0, 0)
+    titleText.BackgroundTransparency = 1
+    titleText.Text = "⚡ SPEED DEMON SETTINGS ⚡"
+    titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleText.TextSize = 14
+    titleText.TextXAlignment = Enum.TextXAlignment.Left
+    titleText.Font = Enum.Font.GothamBold
+    titleText.Parent = titleBar
+    
     local closeBtn = Instance.new("TextButton")
     closeBtn.Size = UDim2.new(0, 30, 0, 30)
     closeBtn.Position = UDim2.new(1, -35, 0, 5)
@@ -580,23 +585,22 @@ local function showSpeedPopup()
     closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeBtn.TextSize = 14
     closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.Parent = title
+    closeBtn.Parent = titleBar
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
-    
     closeBtn.MouseButton1Click:Connect(function()
         speedPopup:Destroy()
         speedPopup = nil
     end)
     
-    -- Number row
+    -- Speed number buttons
     local numbers = {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100"}
-    local startX = 15
+    local startX = 10
     
     for i, v in ipairs(numbers) do
         local numBtn = Instance.new("TextButton")
-        numBtn.Size = UDim2.new(0, 30, 0, 35)
-        numBtn.Position = UDim2.new(0, startX + (i-1) * 31, 0, 55)
-        numBtn.BackgroundColor3 = Color3.fromRGB(30, 40, 60)
+        numBtn.Size = UDim2.new(0, 28, 0, 35)
+        numBtn.Position = UDim2.new(0, startX + (i-1) * 30, 0, 55)
+        numBtn.BackgroundColor3 = Color3.fromRGB(35, 45, 70)
         numBtn.Text = v
         numBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         numBtn.TextSize = 11
@@ -617,22 +621,32 @@ local function showSpeedPopup()
         end)
     end
     
-    -- Custom input
+    -- Custom Speed Input
+    local customLabel = Instance.new("TextLabel")
+    customLabel.Size = UDim2.new(0, 70, 0, 30)
+    customLabel.Position = UDim2.new(0, 10, 0, 100)
+    customLabel.BackgroundTransparency = 1
+    customLabel.Text = "CUSTOM:"
+    customLabel.TextColor3 = Color3.fromRGB(200, 220, 255)
+    customLabel.TextSize = 12
+    customLabel.Font = Enum.Font.GothamBold
+    customLabel.Parent = speedPopup
+    
     local customBox = Instance.new("TextBox")
     customBox.Size = UDim2.new(0, 120, 0, 35)
-    customBox.Position = UDim2.new(0.5, -130, 0, 105)
-    customBox.BackgroundColor3 = Color3.fromRGB(40, 50, 70)
-    customBox.PlaceholderText = "CUSTOM SPEED (16-500)"
+    customBox.Position = UDim2.new(0, 80, 0, 97)
+    customBox.BackgroundColor3 = Color3.fromRGB(45, 55, 80)
+    customBox.PlaceholderText = "Enter speed (16-500)"
     customBox.Text = ""
     customBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    customBox.TextSize = 10
+    customBox.TextSize = 11
     customBox.Font = Enum.Font.GothamBold
     customBox.Parent = speedPopup
     Instance.new("UICorner", customBox).CornerRadius = UDim.new(0, 6)
     
     local setBtn = Instance.new("TextButton")
-    setBtn.Size = UDim2.new(0, 60, 0, 35)
-    setBtn.Position = UDim2.new(0.5, 15, 0, 105)
+    setBtn.Size = UDim2.new(0, 50, 0, 35)
+    setBtn.Position = UDim2.new(0, 205, 0, 97)
     setBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 220)
     setBtn.Text = "SET"
     setBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -654,22 +668,40 @@ local function showSpeedPopup()
             speedPopup:Destroy()
             speedPopup = nil
         else
-            customBox.Text = "16-500 ONLY"
+            customBox.Text = "ERROR: 16-500"
             task.wait(1)
             customBox.Text = ""
         end
     end)
     
     -- ON/OFF Toggle
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Size = UDim2.new(0, 200, 0, 40)
+    toggleFrame.Position = UDim2.new(0.5, -100, 1, -50)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(35, 45, 70)
+    toggleFrame.Parent = speedPopup
+    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 6)
+    
+    local toggleLabel = Instance.new("TextLabel")
+    toggleLabel.Size = UDim2.new(0, 100, 1, 0)
+    toggleLabel.Position = UDim2.new(0, 10, 0, 0)
+    toggleLabel.BackgroundTransparency = 1
+    toggleLabel.Text = "WALK SPEED:"
+    toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleLabel.TextSize = 12
+    toggleLabel.Font = Enum.Font.GothamBold
+    toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    toggleLabel.Parent = toggleFrame
+    
     local toggleBtn = Instance.new("TextButton")
-    toggleBtn.Size = UDim2.new(0, 100, 0, 35)
-    toggleBtn.Position = UDim2.new(0.5, -50, 1, -45)
-    toggleBtn.BackgroundColor3 = speedActive and Color3.fromRGB(0, 150, 50) or Color3.fromRGB(80, 80, 80)
+    toggleBtn.Size = UDim2.new(0, 60, 0, 30)
+    toggleBtn.Position = UDim2.new(1, -70, 0, 5)
+    toggleBtn.BackgroundColor3 = speedActive and Color3.fromRGB(0, 150, 50) or Color3.fromRGB(100, 100, 100)
     toggleBtn.Text = speedActive and "ON" or "OFF"
     toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleBtn.TextSize = 14
+    toggleBtn.TextSize = 12
     toggleBtn.Font = Enum.Font.GothamBold
-    toggleBtn.Parent = speedPopup
+    toggleBtn.Parent = toggleFrame
     Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
     
     toggleBtn.MouseButton1Click:Connect(function()
@@ -685,7 +717,7 @@ local function showSpeedPopup()
             sbtn.Text = "OFF"
             sbtn.BackgroundColor3 = Color3.fromRGB(0, 80, 160)
             toggleBtn.Text = "OFF"
-            toggleBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+            toggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
             stopSpeedLoop()
         end
         speedPopup:Destroy()
@@ -710,5 +742,4 @@ end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - ALL FEATURES READY!")
-print("🔮 Lunar Leap | 🌍 Gravity Changer | ⚡ Speed Demon (POPUP WORKS)")
+print("✅ PART 4/4 - ALL FEATURES READY WITH VISIBLE POPUP!")
