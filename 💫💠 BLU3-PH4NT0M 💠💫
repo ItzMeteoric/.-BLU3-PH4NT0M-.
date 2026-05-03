@@ -429,7 +429,7 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - SPEED DEMON DROPDOWN FIXED POSITION)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - FIXED LAYOUT, NO OVERLAP)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
@@ -493,7 +493,7 @@ gbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ===== SPEED DEMON (FIXED DROPDOWN POSITION - VISIBLE) =====
+-- ===== SPEED DEMON (SCROLLABLE NUMBER ROW - NO OVERLAP) =====
 local speedActive = false
 local currentSpeed = 16
 local speedConnection = nil
@@ -533,14 +533,15 @@ local function setSpeed(value)
     task.wait(1) n:Destroy()
 end
 
--- Main Speed Button Frame
-local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,80) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
+-- Main Speed Button Frame (taller to fit controls)
+local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,120) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
 Instance.new("UICorner", sf).CornerRadius = UDim.new(0,8)
 
+-- Title
 local sl = Instance.new("TextLabel") sl.Size=UDim2.new(1,-90,0,22) sl.Position=UDim2.new(0,10,0,5) sl.BackgroundTransparency=1 sl.Text="⚡SPEED DEMON⚡" sl.TextColor3=Color3.fromRGB(100,180,255) sl.TextSize=12 sl.TextXAlignment=Enum.TextXAlignment.Left sl.Font=Enum.Font.GothamBold sl.Parent=sf
-local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Click buttons below to set speed" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
+local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Scroll numbers → | Custom speed below" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
 
--- ON/OFF Toggle Button
+-- ON/OFF Toggle Button (top right)
 local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,0,5) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="OFF" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
 Instance.new("UICorner", sbtn).CornerRadius = UDim.new(0,6)
 
@@ -558,25 +559,35 @@ sbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Speed Number Buttons (visible directly, no dropdown)
-local numbersFrame = Instance.new("Frame")
-numbersFrame.Size = UDim2.new(1, -10, 0, 35)
-numbersFrame.Position = UDim2.new(0, 5, 0, 45)
-numbersFrame.BackgroundTransparency = 1
-numbersFrame.Parent = sf
+-- Horizontal Scrolling Number Row
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -10, 0, 40)
+scrollFrame.Position = UDim2.new(0, 5, 0, 50)
+scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 30, 50)
+scrollFrame.BorderSizePixel = 0
+scrollFrame.ScrollBarThickness = 3
+scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(0, 150, 255)
+scrollFrame.CanvasSize = UDim2.new(0, 320, 0, 0) -- enough width for all buttons
+scrollFrame.Parent = sf
+Instance.new("UICorner", scrollFrame).CornerRadius = UDim.new(0, 6)
+
+local numbersLayout = Instance.new("UIListLayout")
+numbersLayout.Parent = scrollFrame
+numbersLayout.FillDirection = Enum.FillDirection.Horizontal
+numbersLayout.Padding = UDim.new(0, 4)
+numbersLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 
 local numbers = {"10","20","30","40","50","60","70","80","90","100"}
-for i, v in ipairs(numbers) do
+for _, v in ipairs(numbers) do
     local numBtn = Instance.new("TextButton")
-    numBtn.Size = UDim2.new(0, 28, 0, 30)
-    numBtn.Position = UDim2.new(0, 5 + (i-1) * 29, 0, 0)
+    numBtn.Size = UDim2.new(0, 40, 0, 32)
     numBtn.BackgroundColor3 = Color3.fromRGB(35, 45, 70)
     numBtn.Text = v
     numBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    numBtn.TextSize = 10
+    numBtn.TextSize = 12
     numBtn.Font = Enum.Font.GothamBold
-    numBtn.Parent = numbersFrame
-    Instance.new("UICorner", numBtn).CornerRadius = UDim.new(0, 4)
+    numBtn.Parent = scrollFrame
+    Instance.new("UICorner", numBtn).CornerRadius = UDim.new(0, 6)
     
     numBtn.MouseButton1Click:Connect(function()
         setSpeed(v)
@@ -589,28 +600,35 @@ for i, v in ipairs(numbers) do
     end)
 end
 
--- Custom Speed Input (below numbers)
+-- Custom Input Row
+local customFrame = Instance.new("Frame")
+customFrame.Size = UDim2.new(1, -10, 0, 32)
+customFrame.Position = UDim2.new(0, 5, 0, 95)
+customFrame.BackgroundColor3 = Color3.fromRGB(25, 30, 50)
+customFrame.Parent = sf
+Instance.new("UICorner", customFrame).CornerRadius = UDim.new(0, 6)
+
 local customBox = Instance.new("TextBox")
-customBox.Size = UDim2.new(0, 120, 0, 28)
-customBox.Position = UDim2.new(0, 10, 0, 45)
+customBox.Size = UDim2.new(0, 120, 1, -4)
+customBox.Position = UDim2.new(0, 5, 0, 2)
 customBox.BackgroundColor3 = Color3.fromRGB(45, 55, 80)
 customBox.PlaceholderText = "CUSTOM SPEED (16-500)"
 customBox.Text = ""
 customBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-customBox.TextSize = 9
+customBox.TextSize = 10
 customBox.Font = Enum.Font.GothamBold
-customBox.Parent = sf
+customBox.Parent = customFrame
 Instance.new("UICorner", customBox).CornerRadius = UDim.new(0, 4)
 
 local setBtn = Instance.new("TextButton")
-setBtn.Size = UDim2.new(0, 50, 0, 28)
-setBtn.Position = UDim2.new(0, 135, 0, 45)
+setBtn.Size = UDim2.new(0, 50, 1, -4)
+setBtn.Position = UDim2.new(1, -55, 0, 2)
 setBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 220)
 setBtn.Text = "SET"
 setBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 setBtn.TextSize = 10
 setBtn.Font = Enum.Font.GothamBold
-setBtn.Parent = sf
+setBtn.Parent = customFrame
 Instance.new("UICorner", setBtn).CornerRadius = UDim.new(0, 4)
 
 setBtn.MouseButton1Click:Connect(function()
@@ -646,4 +664,4 @@ end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - ALL FEATURES READY! Number buttons are VISIBLE now")
+print("✅ PART 4/4 - ALL FEATURES READY! Scrollable number row - no overlap")
