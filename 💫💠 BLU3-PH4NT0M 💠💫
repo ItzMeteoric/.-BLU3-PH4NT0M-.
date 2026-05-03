@@ -429,7 +429,7 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - SPEED DEMON PERMANENT FIX)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - Speed Demon with RESET button)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
@@ -493,11 +493,12 @@ gbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ===== SPEED DEMON (PERMANENT - JUST PICK A NUMBER AND RUN) =====
+-- ===== SPEED DEMON (WITH RESET BUTTON) =====
 local currentSpeed = 16
+local originalSpeed = 16
 local speedLoop = nil
 
--- Force speed every single frame (game can't override)
+-- Force speed every single frame
 local function forceSpeed()
     local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
     if h then
@@ -544,15 +545,44 @@ local function setSpeed(value)
     n:Destroy()
 end
 
+-- Reset walk speed to original (16)
+local function resetSpeed()
+    currentSpeed = 16
+    local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
+    if h then
+        h.WalkSpeed = 16
+    end
+    
+    -- Show confirmation
+    local n = Instance.new("TextLabel") 
+    n.Size = UDim2.new(0,150,0,25) 
+    n.Position = UDim2.new(0.5,-75,0.5,-40)
+    n.BackgroundColor3 = Color3.fromRGB(150,100,0) 
+    n.BackgroundTransparency = 0.3 
+    n.Text = "🔮 Speed Reset to NORMAL"
+    n.TextColor3 = Color3.fromRGB(255,255,255) 
+    n.TextSize = 11 
+    n.Font = Enum.Font.GothamBold 
+    n.Parent = MG
+    Instance.new("UICorner", n).CornerRadius = UDim.new(0,8)
+    task.wait(1) 
+    n:Destroy()
+end
+
 -- Start the force loop immediately
 startForceSpeed()
 
 -- Speed Demon UI
-local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,110) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
+local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,140) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
 Instance.new("UICorner", sf).CornerRadius = UDim.new(0,8)
 
 local sl = Instance.new("TextLabel") sl.Size=UDim2.new(1,-90,0,22) sl.Position=UDim2.new(0,10,0,5) sl.BackgroundTransparency=1 sl.Text="⚡SPEED DEMON⚡" sl.TextColor3=Color3.fromRGB(100,180,255) sl.TextSize=12 sl.TextXAlignment=Enum.TextXAlignment.Left sl.Font=Enum.Font.GothamBold sl.Parent=sf
 local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Click any number - speed changes immediately" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
+
+-- RESET button (right side of title)
+local resetBtn = Instance.new("TextButton") resetBtn.Size=UDim2.new(0,100,0,30) resetBtn.Position=UDim2.new(1,-110,0,5) resetBtn.BackgroundColor3=Color3.fromRGB(150,80,0) resetBtn.Text="🔮 RESET" resetBtn.TextColor3=Color3.fromRGB(255,255,255) resetBtn.TextSize=10 resetBtn.Font=Enum.Font.GothamBold resetBtn.Parent=sf
+Instance.new("UICorner", resetBtn).CornerRadius = UDim.new(0,6)
+resetBtn.MouseButton1Click:Connect(resetSpeed)
 
 -- Scrollable number row
 local scrollFrame = Instance.new("ScrollingFrame")
@@ -636,6 +666,8 @@ end)
 PL.CharacterAdded:Connect(function()
     task.wait(0.5)
     forceSpeed()
+    -- Reset speed to normal on respawn (optional - remove if you want speed to persist)
+    -- currentSpeed = 16
 end)
 
 -- Update canvas size
@@ -645,4 +677,4 @@ end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - SPEED DEMON PERMANENTLY WORKS!")
+print("✅ PART 4/4 - Speed Demon with RESET button!")
