@@ -429,7 +429,7 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - Speed Demon with RESET button)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - With ZERO DELAY Instant Prompt)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
@@ -493,12 +493,62 @@ gbtn.MouseButton1Click:Connect(function()
     end
 end)
 
+-- ===== ZERO DELAY (Instant Proximity Prompt) =====
+local zeroDelayActive = false
+local zeroDelayLoop = nil
+
+local function triggerProximityPrompts()
+    local char = PL.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    -- Scan for proximity prompts nearby
+    for _, obj in ipairs(WS:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") then
+            local part = obj.Parent
+            if part and part:IsA("BasePart") then
+                local distance = (part.Position - hrp.Position).Magnitude
+                if distance < obj.MaxActivationDistance then
+                    obj:Prompt()
+                end
+            end
+        end
+    end
+end
+
+local function startZeroDelay()
+    if zeroDelayLoop then zeroDelayLoop:Disconnect() end
+    zeroDelayLoop = RS.Stepped:Connect(triggerProximityPrompts)
+end
+
+local function stopZeroDelay()
+    if zeroDelayLoop then zeroDelayLoop:Disconnect() end
+    zeroDelayLoop = nil
+end
+
+-- ZERO DELAY UI Button
+local zdFrame = Instance.new("Frame") zdFrame.Size=UDim2.new(0,300,0,60) zdFrame.BackgroundColor3=Color3.fromRGB(18,22,42) zdFrame.BackgroundTransparency=0.2 zdFrame.Parent=miscScroll
+Instance.new("UICorner", zdFrame).CornerRadius = UDim.new(0,8)
+local zdLabel = Instance.new("TextLabel") zdLabel.Size=UDim2.new(1,-90,0,22) zdLabel.Position=UDim2.new(0,10,0,5) zdLabel.BackgroundTransparency=1 zdLabel.Text="💫 ZERO DELAY 💫" zdLabel.TextColor3=Color3.fromRGB(100,180,255) zdLabel.TextSize=12 zdLabel.TextXAlignment=Enum.TextXAlignment.Left zdLabel.Font=Enum.Font.GothamBold zdLabel.Parent=zdFrame
+local zdDesc = Instance.new("TextLabel") zdDesc.Size=UDim2.new(1,-90,0,18) zdDesc.Position=UDim2.new(0,10,0,28) zdDesc.BackgroundTransparency=1 zdDesc.Text="Auto-triggers prompts instantly (no holding)" zdDesc.TextColor3=Color3.fromRGB(130,130,170) zdDesc.TextSize=9 zdDesc.Font=Enum.Font.Gotham zdDesc.Parent=zdFrame
+local zdBtn = Instance.new("TextButton") zdBtn.Size=UDim2.new(0,75,0,34) zdBtn.Position=UDim2.new(1,-85,1,-44) zdBtn.BackgroundColor3=Color3.fromRGB(0,80,160) zdBtn.Text="OFF" zdBtn.TextColor3=Color3.fromRGB(255,255,255) zdBtn.TextSize=11 zdBtn.Font=Enum.Font.GothamBold zdBtn.Parent=zdFrame
+Instance.new("UICorner", zdBtn).CornerRadius = UDim.new(0,6)
+
+zdBtn.MouseButton1Click:Connect(function()
+    zeroDelayActive = not zeroDelayActive
+    if zeroDelayActive then
+        zdBtn.Text="ON" zdBtn.BackgroundColor3=Color3.fromRGB(0,150,50)
+        startZeroDelay()
+    else
+        zdBtn.Text="OFF" zdBtn.BackgroundColor3=Color3.fromRGB(0,80,160)
+        stopZeroDelay()
+    end
+end)
+
 -- ===== SPEED DEMON (WITH RESET BUTTON) =====
 local currentSpeed = 16
-local originalSpeed = 16
 local speedLoop = nil
 
--- Force speed every single frame
 local function forceSpeed()
     local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
     if h then
@@ -508,13 +558,11 @@ local function forceSpeed()
     end
 end
 
--- Start forcing speed constantly
 local function startForceSpeed()
     if speedLoop then speedLoop:Disconnect() end
     speedLoop = RS.RenderStepped:Connect(forceSpeed)
 end
 
--- Set speed (called when you click a number)
 local function setSpeed(value)
     if value == "NORMAL" then
         currentSpeed = 16
@@ -523,13 +571,11 @@ local function setSpeed(value)
         if not currentSpeed then currentSpeed = 16 end
     end
     
-    -- Apply immediately
     local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
     if h then
         h.WalkSpeed = currentSpeed
     end
     
-    -- Show confirmation
     local n = Instance.new("TextLabel") 
     n.Size = UDim2.new(0,150,0,25) 
     n.Position = UDim2.new(0.5,-75,0.5,-40)
@@ -545,7 +591,6 @@ local function setSpeed(value)
     n:Destroy()
 end
 
--- Reset walk speed to original (16)
 local function resetSpeed()
     currentSpeed = 16
     local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
@@ -553,7 +598,6 @@ local function resetSpeed()
         h.WalkSpeed = 16
     end
     
-    -- Show confirmation
     local n = Instance.new("TextLabel") 
     n.Size = UDim2.new(0,150,0,25) 
     n.Position = UDim2.new(0.5,-75,0.5,-40)
@@ -569,7 +613,6 @@ local function resetSpeed()
     n:Destroy()
 end
 
--- Start the force loop immediately
 startForceSpeed()
 
 -- Speed Demon UI
@@ -579,12 +622,10 @@ Instance.new("UICorner", sf).CornerRadius = UDim.new(0,8)
 local sl = Instance.new("TextLabel") sl.Size=UDim2.new(1,-90,0,22) sl.Position=UDim2.new(0,10,0,5) sl.BackgroundTransparency=1 sl.Text="⚡SPEED DEMON⚡" sl.TextColor3=Color3.fromRGB(100,180,255) sl.TextSize=12 sl.TextXAlignment=Enum.TextXAlignment.Left sl.Font=Enum.Font.GothamBold sl.Parent=sf
 local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Click any number - speed changes immediately" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
 
--- RESET button (right side of title)
 local resetBtn = Instance.new("TextButton") resetBtn.Size=UDim2.new(0,100,0,30) resetBtn.Position=UDim2.new(1,-110,0,5) resetBtn.BackgroundColor3=Color3.fromRGB(150,80,0) resetBtn.Text="🔮 RESET" resetBtn.TextColor3=Color3.fromRGB(255,255,255) resetBtn.TextSize=10 resetBtn.Font=Enum.Font.GothamBold resetBtn.Parent=sf
 Instance.new("UICorner", resetBtn).CornerRadius = UDim.new(0,6)
 resetBtn.MouseButton1Click:Connect(resetSpeed)
 
--- Scrollable number row
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1, -10, 0, 40)
 scrollFrame.Position = UDim2.new(0, 5, 0, 50)
@@ -619,7 +660,6 @@ for _, v in ipairs(numbers) do
     end)
 end
 
--- Custom speed input
 local customFrame = Instance.new("Frame")
 customFrame.Size = UDim2.new(1, -10, 0, 32)
 customFrame.Position = UDim2.new(0, 5, 0, 95)
@@ -662,12 +702,9 @@ setBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Keep speed on respawn
 PL.CharacterAdded:Connect(function()
     task.wait(0.5)
     forceSpeed()
-    -- Reset speed to normal on respawn (optional - remove if you want speed to persist)
-    -- currentSpeed = 16
 end)
 
 -- Update canvas size
@@ -677,4 +714,4 @@ end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - Speed Demon with RESET button!")
+print("✅ PART 4/4 - Added 💫 ZERO DELAY (Instant Proximity Prompts)")
