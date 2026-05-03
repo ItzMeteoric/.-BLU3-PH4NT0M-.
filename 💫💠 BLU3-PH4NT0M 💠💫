@@ -402,7 +402,7 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - FIXED Speed Demon)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - SPEED DEMON PERMANENT FIX)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
@@ -416,7 +416,7 @@ local jumpConn = nil
 local jf = Instance.new("Frame") jf.Size=UDim2.new(0,300,0,60) jf.BackgroundColor3=Color3.fromRGB(18,22,42) jf.BackgroundTransparency=0.2 jf.Parent=miscScroll
 Instance.new("UICorner", jf).CornerRadius = UDim.new(0,8)
 local jl = Instance.new("TextLabel") jl.Size=UDim2.new(1,-90,0,22) jl.Position=UDim2.new(0,10,0,5) jl.BackgroundTransparency=1 jl.Text="^° 🌌LUN4R L34P🌌 °^" jl.TextColor3=Color3.fromRGB(100,180,255) jl.TextSize=12 jl.TextXAlignment=Enum.TextXAlignment.Left jl.Font=Enum.Font.GothamBold jl.Parent=jf
-local jd = Instance.new("TextLabel") jd.Size=UDim2.new(1,-90,0,18) jd.Position=UDim2.new(0,10,0,28) jd.BackgroundTransparency=1 jd.Text="Infinite jumps - works on R6/R15" jd.TextColor3=Color3.fromRGB(130,130,170) jd.TextSize=9 jd.Font=Enum.Font.Gotham jd.Parent=jf
+local jd = Instance.new("TextLabel") jd.Size=UDim2.new(1,-90,0,18) jd.Position=UDim2.new(0,10,0,28) jd.BackgroundTransparency=1 jd.Text="Infinite jumps - works anywhere" jd.TextColor3=Color3.fromRGB(130,130,170) jd.TextSize=9 jd.Font=Enum.Font.Gotham jd.Parent=jf
 local jbtn = Instance.new("TextButton") jbtn.Size=UDim2.new(0,75,0,34) jbtn.Position=UDim2.new(1,-85,1,-44) jbtn.BackgroundColor3=Color3.fromRGB(0,80,160) jbtn.Text="OFF" jbtn.TextColor3=Color3.fromRGB(255,255,255) jbtn.TextSize=11 jbtn.Font=Enum.Font.GothamBold jbtn.Parent=jf
 Instance.new("UICorner", jbtn).CornerRadius = UDim.new(0,6)
 
@@ -466,28 +466,47 @@ gbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ===== SPEED DEMON (FIXED - NO GLITCHES) =====
-local function setSpeed(value)
+-- ===== SPEED DEMON (PERMANENT FIX - CONSTANT OVERRIDE) =====
+local speedActive = false
+local currentSpeed = 16
+local speedConnection = nil
+
+local function applySpeed()
     local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
-    if h then
-        local sp = (value == "NORMAL") and 16 or tonumber(value)
-        h.WalkSpeed = sp
-        sbtn.Text = value
-        
-        -- Show confirmation
-        local n = Instance.new("TextLabel") n.Size=UDim2.new(0,150,0,25) n.Position=UDim2.new(0.5,-75,0.5,-40)
-        n.BackgroundColor3=Color3.fromRGB(0,150,100) n.BackgroundTransparency=0.3 n.Text="⚡ Speed: "..sp
-        n.TextColor3=Color3.fromRGB(255,255,255) n.TextSize=11 n.Font=Enum.Font.GothamBold n.Parent=MG
-        Instance.new("UICorner", n).CornerRadius = UDim.new(0,8)
-        task.wait(1) n:Destroy()
+    if h and speedActive then
+        h.WalkSpeed = currentSpeed
     end
+end
+
+local function startSpeedLoop()
+    if speedConnection then speedConnection:Disconnect() end
+    speedConnection = RS.Heartbeat:Connect(applySpeed)  -- Runs every frame
+end
+
+local function stopSpeedLoop()
+    if speedConnection then speedConnection:Disconnect() end
+    speedConnection = nil
+    local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
+    if h then h.WalkSpeed = 16 end
+end
+
+local function setSpeed(value)
+    currentSpeed = (value == "NORMAL") and 16 or tonumber(value)
+    applySpeed()
+    
+    -- Show confirmation
+    local n = Instance.new("TextLabel") n.Size=UDim2.new(0,150,0,25) n.Position=UDim2.new(0.5,-75,0.5,-40)
+    n.BackgroundColor3=Color3.fromRGB(0,150,100) n.BackgroundTransparency=0.3 n.Text="⚡ Speed: "..currentSpeed
+    n.TextColor3=Color3.fromRGB(255,255,255) n.TextSize=11 n.Font=Enum.Font.GothamBold n.Parent=MG
+    Instance.new("UICorner", n).CornerRadius = UDim.new(0,8)
+    task.wait(1) n:Destroy()
 end
 
 local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,60) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
 Instance.new("UICorner", sf).CornerRadius = UDim.new(0,8)
 local sl = Instance.new("TextLabel") sl.Size=UDim2.new(1,-90,0,22) sl.Position=UDim2.new(0,10,0,5) sl.BackgroundTransparency=1 sl.Text="⚡SPEED DEMON⚡" sl.TextColor3=Color3.fromRGB(100,180,255) sl.TextSize=12 sl.TextXAlignment=Enum.TextXAlignment.Left sl.Font=Enum.Font.GothamBold sl.Parent=sf
-local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Select walk speed from menu" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
-local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,1,-44) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="SELECT" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
+local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Click SELECT, choose speed (stays active)" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
+local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,1,-44) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="OFF" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
 Instance.new("UICorner", sbtn).CornerRadius = UDim.new(0,6)
 
 -- Dropdown menu
@@ -503,11 +522,37 @@ for _, v in ipairs(opts) do
     Instance.new("UICorner", ob).CornerRadius = UDim.new(0,4)
     ob.MouseButton1Click:Connect(function()
         setSpeed(v)
+        if not speedActive then
+            speedActive = true
+            sbtn.Text = "ON"
+            sbtn.BackgroundColor3 = Color3.fromRGB(0,150,50)
+            startSpeedLoop()
+        end
         dd.Visible = false
     end)
 end
 
-sbtn.MouseButton1Click:Connect(function() dd.Visible = not dd.Visible end)
+sbtn.MouseButton1Click:Connect(function()
+    speedActive = not speedActive
+    if speedActive then
+        sbtn.Text = "ON"
+        sbtn.BackgroundColor3 = Color3.fromRGB(0,150,50)
+        startSpeedLoop()
+        applySpeed()
+    else
+        sbtn.Text = "OFF"
+        sbtn.BackgroundColor3 = Color3.fromRGB(0,80,160)
+        stopSpeedLoop()
+    end
+end)
+
+-- Keep speed on respawn
+PL.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    if speedActive then
+        applySpeed()
+    end
+end)
 
 -- Update canvas
 miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -516,5 +561,5 @@ end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - ALL FEATURES READY (Speed Demon FIXED)")
-print("🔮 Phantom Eye | 🌌 Lunar Leap | ⚡ Speed Demon | 🌍 Gravity Changer")
+print("✅ PART 4/4 - ALL FEATURES READY (Speed Demon PERMANENT FIX)")
+print("🔮 Phantom Eye | 🌌 Lunar Leap | ⚡ Speed Demon (constant override) | 🌍 Gravity Changer")
