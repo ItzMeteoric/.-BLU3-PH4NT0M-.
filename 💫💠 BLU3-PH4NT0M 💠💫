@@ -402,14 +402,14 @@ lbtn.MouseButton1Click:Connect(function()
 end)
 
 print("✅ PART 3/4 - ESP Ready")
--- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - R6 + R15 COMPATIBLE)
+-- 🔷 BLU3 PH4NT0M - PART 4 (MISC Tab - FIXED Speed Demon)
 local miscScroll = containers[3].frame
 local miscLayout = Instance.new("UIListLayout")
 miscLayout.Parent = miscScroll
 miscLayout.Padding = UDim.new(0, 10)
 miscLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- ===== LUNAR LEAP (Infinite Jump - WORKS ON BOTH) =====
+-- ===== LUNAR LEAP (Infinite Jump) =====
 local jumpActive = false
 local jumpConn = nil
 
@@ -428,9 +428,7 @@ jbtn.MouseButton1Click:Connect(function()
         jumpConn = UIS.JumpRequest:Connect(function()
             if jumpActive then
                 local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
-                if h then
-                    h:ChangeState(Enum.HumanoidStateType.Jumping)
-                end
+                if h then h:ChangeState(Enum.HumanoidStateType.Jumping) end
             end
         end)
     else
@@ -439,7 +437,7 @@ jbtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ===== GRAVITY CHANGER (FIXED - works on R6 + R15) =====
+-- ===== GRAVITY CHANGER =====
 local gravActive = false
 local origJump = nil
 
@@ -464,23 +462,36 @@ gbtn.MouseButton1Click:Connect(function()
         gbtn.Text="OFF" gbtn.BackgroundColor3=Color3.fromRGB(0,80,160)
         WS.Gravity = 196.2
         local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
-        if h and origJump then
-            h.JumpPower = origJump
-        end
+        if h and origJump then h.JumpPower = origJump end
     end
 end)
 
--- ===== SPEED DEMON (FIXED - works on R6 + R15) =====
-local curSpeed = 16
+-- ===== SPEED DEMON (FIXED - NO GLITCHES) =====
+local function setSpeed(value)
+    local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
+    if h then
+        local sp = (value == "NORMAL") and 16 or tonumber(value)
+        h.WalkSpeed = sp
+        sbtn.Text = value
+        
+        -- Show confirmation
+        local n = Instance.new("TextLabel") n.Size=UDim2.new(0,150,0,25) n.Position=UDim2.new(0.5,-75,0.5,-40)
+        n.BackgroundColor3=Color3.fromRGB(0,150,100) n.BackgroundTransparency=0.3 n.Text="⚡ Speed: "..sp
+        n.TextColor3=Color3.fromRGB(255,255,255) n.TextSize=11 n.Font=Enum.Font.GothamBold n.Parent=MG
+        Instance.new("UICorner", n).CornerRadius = UDim.new(0,8)
+        task.wait(1) n:Destroy()
+    end
+end
 
 local sf = Instance.new("Frame") sf.Size=UDim2.new(0,300,0,60) sf.BackgroundColor3=Color3.fromRGB(18,22,42) sf.BackgroundTransparency=0.2 sf.Parent=miscScroll
 Instance.new("UICorner", sf).CornerRadius = UDim.new(0,8)
 local sl = Instance.new("TextLabel") sl.Size=UDim2.new(1,-90,0,22) sl.Position=UDim2.new(0,10,0,5) sl.BackgroundTransparency=1 sl.Text="⚡SPEED DEMON⚡" sl.TextColor3=Color3.fromRGB(100,180,255) sl.TextSize=12 sl.TextXAlignment=Enum.TextXAlignment.Left sl.Font=Enum.Font.GothamBold sl.Parent=sf
-local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Change walk speed (click SELECT)" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
-local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,1,-44) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="NORMAL" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
+local sd = Instance.new("TextLabel") sd.Size=UDim2.new(1,-90,0,18) sd.Position=UDim2.new(0,10,0,28) sd.BackgroundTransparency=1 sd.Text="Select walk speed from menu" sd.TextColor3=Color3.fromRGB(130,130,170) sd.TextSize=9 sd.Font=Enum.Font.Gotham sd.Parent=sf
+local sbtn = Instance.new("TextButton") sbtn.Size=UDim2.new(0,75,0,34) sbtn.Position=UDim2.new(1,-85,1,-44) sbtn.BackgroundColor3=Color3.fromRGB(0,80,160) sbtn.Text="SELECT" sbtn.TextColor3=Color3.fromRGB(255,255,255) sbtn.TextSize=11 sbtn.Font=Enum.Font.GothamBold sbtn.Parent=sf
 Instance.new("UICorner", sbtn).CornerRadius = UDim.new(0,6)
 
-local dd = Instance.new("Frame") dd.Size=UDim2.new(0,180,0,200) dd.Position=UDim2.new(1,-190,0,40) dd.BackgroundColor3=Color3.fromRGB(18,22,42) dd.BackgroundTransparency=0.1 dd.Visible=false dd.Parent=sf
+-- Dropdown menu
+local dd = Instance.new("Frame") dd.Size=UDim2.new(0,180,0,220) dd.Position=UDim2.new(1,-190,0,40) dd.BackgroundColor3=Color3.fromRGB(18,22,42) dd.BackgroundTransparency=0.1 dd.Visible=false dd.Parent=sf
 Instance.new("UICorner", dd).CornerRadius = UDim.new(0,6)
 local sc = Instance.new("ScrollingFrame") sc.Size=UDim2.new(1,0,1,0) sc.BackgroundTransparency=1 sc.ScrollBarThickness=4 sc.Parent=dd
 local scl = Instance.new("UIListLayout") scl.Parent=sc scl.Padding=UDim.new(0,2) scl.HorizontalAlignment=Enum.HorizontalAlignment.Center
@@ -491,38 +502,19 @@ for _, v in ipairs(opts) do
     local ob = Instance.new("TextButton") ob.Size=UDim2.new(0,160,0,30) ob.BackgroundColor3=Color3.fromRGB(25,25,35) ob.Text="⚡ "..v.." ⚡" ob.TextColor3=Color3.fromRGB(200,200,255) ob.TextSize=11 ob.Font=Enum.Font.GothamBold ob.Parent=sc
     Instance.new("UICorner", ob).CornerRadius = UDim.new(0,4)
     ob.MouseButton1Click:Connect(function()
-        local h = PL.Character and PL.Character:FindFirstChildOfClass("Humanoid")
-        if h then
-            local sp = (v == "NORMAL") and 16 or tonumber(v)
-            h.WalkSpeed = sp
-            curSpeed = sp
-            sbtn.Text = v
-            -- Show confirmation
-            local n = Instance.new("TextLabel") n.Size=UDim2.new(0,150,0,25) n.Position=UDim2.new(0.5,-75,0.5,-40) n.BackgroundColor3=Color3.fromRGB(0,150,100) n.BackgroundTransparency=0.3 n.Text="⚡ Speed: "..sp n.TextColor3=Color3.fromRGB(255,255,255) n.TextSize=11 n.Font=Enum.Font.GothamBold n.Parent=MG
-            Instance.new("UICorner", n).CornerRadius = UDim.new(0,8)
-            task.wait(1) n:Destroy()
-        end
+        setSpeed(v)
         dd.Visible = false
     end)
 end
 
 sbtn.MouseButton1Click:Connect(function() dd.Visible = not dd.Visible end)
 
--- Keep speed on respawn (works for R6 and R15)
-PL.CharacterAdded:Connect(function(c)
-    task.wait(0.5)
-    local h = c:FindFirstChildOfClass("Humanoid")
-    if h and curSpeed then
-        h.WalkSpeed = curSpeed
-    end
-end)
-
--- Update canvas size
+-- Update canvas
 miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 end)
 task.wait()
 miscScroll.CanvasSize = UDim2.new(0,0,0,miscLayout.AbsoluteContentSize.Y+20)
 
-print("✅ PART 4/4 - R6/R15 COMPATIBLE - All features ready!")
+print("✅ PART 4/4 - ALL FEATURES READY (Speed Demon FIXED)")
 print("🔮 Phantom Eye | 🌌 Lunar Leap | ⚡ Speed Demon | 🌍 Gravity Changer")
