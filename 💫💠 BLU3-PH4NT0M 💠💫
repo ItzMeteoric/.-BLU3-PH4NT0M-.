@@ -1,4 +1,4 @@
--- 🔷 BLU3 PH4NT0M - PART 1 (Core GUI with PROPER ORBITING EMOJIS)
+-- 🔷 BLU3 PH4NT0M - PART 1 (60x60 Super Small)
 local P=game:GetService("Players") local UIS=game:GetService("UserInputService") 
 local RS=game:GetService("RunService") local WS=game:GetService("Workspace") 
 local TS=game:GetService("TweenService") local PL=P.LocalPlayer 
@@ -17,59 +17,54 @@ end
 local SG=Instance.new("ScreenGui") SG.Name="BluePhantom" SG.ResetOnSpawn=false SG.Parent=PG
 local SF=Instance.new("Frame") SF.Size=UDim2.new(1,0,1,0) SF.BackgroundColor3=Color3.fromRGB(0,8,20) SF.BorderSizePixel=0 SF.Parent=SG
 local TI=Instance.new("TextLabel") TI.Size=UDim2.new(0,280,0,60) TI.Position=UDim2.new(0.5,-140,0.5,-30) TI.BackgroundTransparency=1 TI.Text="💠 BLU3 PH4NT0M 💠" TI.TextColor3=Color3.fromRGB(0,150,255) TI.TextSize=26 TI.Font=Enum.Font.GothamBold TI.TextTransparency=1 TI.Parent=SF
-local SU=Instance.new("TextLabel") SU.Size=UDim2.new(1,0,0,25) SU.Position=UDim2.new(0,0,0.5,25) SU.BackgroundTransparency=1 SU.Text="> ORBITING <" SU.TextColor3=Color3.fromRGB(100,180,255) SU.TextSize=12 SU.Font=Enum.Font.Gotham SU.TextTransparency=1 SU.Parent=SF
+local SU=Instance.new("TextLabel") SU.Size=UDim2.new(1,0,0,25) SU.Position=UDim2.new(0,0,0.5,25) SU.BackgroundTransparency=1 SU.Text="> 60x60 <" SU.TextColor3=Color3.fromRGB(100,180,255) SU.TextSize=12 SU.Font=Enum.Font.Gotham SU.TextTransparency=1 SU.Parent=SF
 TS:Create(TI,TweenInfo.new(0.8),{TextTransparency=0}):Play() TS:Create(SU,TweenInfo.new(0.8),{TextTransparency=0}):Play()
 task.wait(1) TS:Create(SF,TweenInfo.new(0.6),{BackgroundTransparency=1}):Play() task.wait(0.5) SG:Destroy()
 
 local MG=Instance.new("ScreenGui") MG.Name="BluePhantom" MG.ResetOnSpawn=false MG.Parent=PG
 
--- ===== ORBITING BUTTON =====
-local FB=Instance.new("TextButton") FB.Size=UDim2.new(0,100,0,100) FB.Position=UDim2.new(0,15,1,-115) FB.BackgroundColor3=Color3.fromRGB(0,0,0) FB.BackgroundTransparency=0.15 FB.BorderSizePixel=0 FB.Text="" FB.Parent=MG 
+-- ===== 60x60 ORBITING BUTTON =====
+local FB=Instance.new("TextButton") FB.Size=UDim2.new(0,60,0,60) FB.Position=UDim2.new(0,15,1,-75) FB.BackgroundColor3=Color3.fromRGB(0,0,0) FB.BackgroundTransparency=0.15 FB.BorderSizePixel=0 FB.Text="" FB.Parent=MG 
 Instance.new("UICorner",FB).CornerRadius=UDim.new(0.5,0)
 
 -- 💠 CENTER EMOJI
 local centerEmoji = Instance.new("TextLabel")
-centerEmoji.Size = UDim2.new(0, 45, 0, 45)
-centerEmoji.Position = UDim2.new(0.28, 0, 0.28, 0)
+centerEmoji.Size = UDim2.new(0, 28, 0, 28)
+centerEmoji.Position = UDim2.new(0.26, 0, 0.26, 0)
 centerEmoji.BackgroundTransparency = 1
 centerEmoji.Text = "💠"
 centerEmoji.TextColor3 = Color3.fromRGB(0, 200, 255)
-centerEmoji.TextSize = 38
+centerEmoji.TextSize = 22
 centerEmoji.Font = Enum.Font.GothamBold
 centerEmoji.Parent = FB
 
--- Create orbiting emojis (they will go in a circle around center)
+-- Create orbiting emojis
 local orbiters = {}
-
--- 8 emojis in a circle: 🌑 and 💫 alternating
 local emojiTypes = {"🌑", "💫", "🌑", "💫", "🌑", "💫", "🌑", "💫"}
-local orbitRadius = 40
-local orbitSpeed = 1.5
+local orbitRadius = 22
 
 for i = 1, 8 do
     local orbiter = Instance.new("TextLabel")
-    orbiter.Size = UDim2.new(0, 28, 0, 28)
+    orbiter.Size = UDim2.new(0, 16, 0, 16)
     orbiter.BackgroundTransparency = 1
     orbiter.Text = emojiTypes[i]
     orbiter.TextColor3 = (emojiTypes[i] == "🌑") and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(255, 215, 0)
-    orbiter.TextSize = 24
+    orbiter.TextSize = 13
     orbiter.Font = Enum.Font.GothamBold
     orbiter.Parent = FB
     table.insert(orbiters, {label = orbiter, angle = i * 45, radius = orbitRadius})
 end
 
--- Animation loop: make them orbit around center
+-- Animation loop
 local angle = 0
 task.spawn(function()
     while true do
-        angle = angle + orbitSpeed
+        angle = angle + 1.5
         for i, orb in ipairs(orbiters) do
             local rad = math.rad(orb.angle + angle)
             local x = math.cos(rad) * orbitRadius
             local y = math.sin(rad) * orbitRadius
-            orb.label.Position = UDim2.new(0.5, x - 14, 0.5, y - 14)
-            
-            -- Make each emoji spin individually
+            orb.label.Position = UDim2.new(0.5, x - 8, 0.5, y - 8)
             orb.label.Rotation = orb.label.Rotation + 2
         end
         task.wait(0.03)
@@ -88,16 +83,16 @@ end)
 
 -- Neon ring border
 local neonRing = Instance.new("Frame")
-neonRing.Size = UDim2.new(1.2, 0, 1.2, 0)
-neonRing.Position = UDim2.new(-0.1, 0, -0.1, 0)
+neonRing.Size = UDim2.new(1.3, 0, 1.3, 0)
+neonRing.Position = UDim2.new(-0.15, 0, -0.15, 0)
 neonRing.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
 neonRing.BackgroundTransparency = 0.5
-neonRing.BorderSizePixel = 3
+neonRing.BorderSizePixel = 2
 neonRing.BorderColor3 = Color3.fromRGB(0, 200, 255)
 neonRing.Parent = FB
 Instance.new("UICorner", neonRing).CornerRadius = UDim.new(0.5, 0)
 
--- Pulse animation for ring
+-- Pulse animation
 task.spawn(function()
     local pulse = 0
     local direction = 1
@@ -111,12 +106,11 @@ task.spawn(function()
             direction = 1
         end
         neonRing.BackgroundTransparency = pulse
-        neonRing.BorderSizePixel = 2 + math.random(0, 2)
         task.wait(0.05)
     end
 end)
 
--- Draggable
+-- Draggable with screen bounds
 local dragging = false
 local dragStartPos = nil
 local dragStartOffset = nil
@@ -141,8 +135,8 @@ UIS.InputChanged:Connect(function(input)
         local newY = dragStartOffset.Y.Offset + delta.Y
         
         local screenSize = UIS:GetMouseLocation()
-        newX = math.clamp(newX, 10, screenSize.X - 110)
-        newY = math.clamp(newY, 10, screenSize.Y - 115)
+        newX = math.clamp(newX, 10, screenSize.X - 70)
+        newY = math.clamp(newY, 10, screenSize.Y - 75)
         
         FB.Position = UDim2.new(dragStartOffset.X.Scale, newX, dragStartOffset.Y.Scale, newY)
     end
@@ -214,7 +208,7 @@ end)
 FB.MouseButton1Click:Connect(function() MW.Visible=true FB.Visible=false end)
 CL.MouseButton1Click:Connect(function() MW.Visible=false FB.Visible=true end)
 
-print("✅ PART 1/4 - Orbiting Emojis Ready! 🌑💫 spin around 💠")
+print("✅ PART 1/4 - 60x60 Super Small Orbiting Button Ready!")
 -- 🔷 BLU3 PH4NT0M - PART 2 (MAIN Tab - Teleports FIXED)
 local mainScroll = containers[1].frame
 for _, child in ipairs(mainScroll:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
